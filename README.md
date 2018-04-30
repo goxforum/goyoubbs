@@ -2,7 +2,7 @@
 GoXForum 基于youBBS做了若干调整
 
 ```
-go get github.com/goxforum/xforum/pkg
+go get github.com/goxforum/xforum/cmd/xforum/...
 ```
 
 ## 计划支持功能
@@ -11,7 +11,8 @@ go get github.com/goxforum/xforum/pkg
 - [ ] Docker部署
 
 
-
-
+## 技术改动
+- [ ] 使用dep管理依赖包
+- [ ] 代码结构调整
 
 
