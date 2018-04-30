@@ -1,4 +1,6 @@
 # Go-XForum
+[![Go Report Card](https://goreportcard.com/badge/github.com/goxforum/xforum)](https://goreportcard.com/report/github.com/goxforum/xforum)
+
 GoXForum 基于youBBS做了若干调整
 
 ```
