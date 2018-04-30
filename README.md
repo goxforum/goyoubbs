@@ -14,7 +14,7 @@ go get github.com/goxforum/xforum/cmd/xforum/...
 
 
 ## 技术改动
-- [ ] 使用dep管理依赖包
-- [ ] 代码结构调整
+- [x] 使用dep管理依赖包
+- [x] 代码结构调整
 
 
