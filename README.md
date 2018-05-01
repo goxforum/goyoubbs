@@ -9,7 +9,7 @@ go get github.com/goxforum/xforum/cmd/xforum/...
 
 ## 计划支持功能
 - [x] 云存储上传前缀支持
-- [ ] LDAP登录支持
+- [x] LDAP登录支持
 - [ ] Docker部署
 
 
