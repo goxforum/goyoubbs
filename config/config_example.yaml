@@ -3,7 +3,7 @@ Main:
     HttpsOn: false
     Domain: ""
     HttpsPort: 443
-    PubDir: "static"
+    PubDir: "../../static"
     ViewDir: "view/default"
     Youdb: "mydata.db"
     CookieSecure: false
@@ -43,9 +43,17 @@ Site:
     UploadMaxSize: 50
     QiniuAccessKey: ""
     QiniuSecretKey: ""
+    CloudUploadPrefix: "xforum"  # All upload file will like this youdomain.com/xforum/static/upload/xxx.jpg
     QiniuDomain: ""
     QiniuBucket: ""
     UpyunDomain: ""
     UpyunBucket: ""
     UpyunUser: ""
     UpyunPw: ""
+    LdapEnabled: true
+    LdapBindDN: "uid=admin,ou=system"
+    LdapBindPasswd: "your password"
+    LdapServerHost: "ldap host"
+    LdapServerPort: 389
+    LdapUserSearchBaseDN: "ou=users,dc=xxx,dc=org"
+    LdapUserSearchFilter: "(&(objectClass=organizationalPerson)(uid=%s))"
