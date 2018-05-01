@@ -16,5 +16,5 @@ go get github.com/goxforum/xforum/cmd/xforum/...
 ## 技术改动
 - [x] 使用dep管理依赖包
 - [x] 代码结构调整
-
+- [ ] 后端存储支持MongoDB
 
