@@ -175,6 +175,12 @@
   version = "v0.3.0"
 
 [[projects]]
+  name = "gopkg.in/asn1-ber.v1"
+  packages = ["."]
+  revision = "379148ca0225df7a432012b8df0355c2a2063ac0"
+  version = "v1.2"
+
+[[projects]]
   name = "gopkg.in/h2non/filetype.v1"
   packages = [
     ".",
@@ -183,6 +189,18 @@
   ]
   revision = "cc14fdc9ca0e4c2bafad7458f6ff79fd3947cfbb"
   version = "v1.0.5"
+
+[[projects]]
+  name = "gopkg.in/ldap.v2"
+  packages = ["."]
+  revision = "bb7a9ca6e4fbc2129e3db588a34bc970ffe811a9"
+  version = "v2.5.1"
+
+[[projects]]
+  name = "gopkg.in/logger.v1"
+  packages = ["."]
+  revision = "40d4ef668ed35ee756346203aef59abf8eb7601a"
+  version = "v1.0.1"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -203,6 +221,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f3c0e7cf2a1ff6ef5362dd74028e6c063107af2d9042aaa1f383c43170f0811d"
+  inputs-digest = "182ea97fa6ad463da0b49eb3a4659219e28d27d25af7e15add5e5fa7dcffb4cf"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -26,15 +26,19 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ego008/youdb"
-	"github.com/goxforum/xforum/pkg/model"
-	"github.com/goxforum/xforum/pkg/util"
 	"github.com/rs/xid"
 	"goji.io/pat"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ego008/youdb"
+	"gopkg.in/logger.v1"
+
+	"github.com/goxforum/xforum/pkg/model"
+	"github.com/goxforum/xforum/pkg/util"
 )
 
 func (h *BaseHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
@@ -72,6 +76,8 @@ func (h *BaseHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
+	siteCf := h.App.Cf.Site
+	mainCf := h.App.Cf.Main
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	token := h.GetCookie(r, "token")
@@ -83,8 +89,9 @@ func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
 	act := strings.TrimLeft(r.RequestURI, "/")
 
 	type recForm struct {
-		Name     string `json:"name"`
-		Password string `json:"password"`
+		Name          string `json:"name"`
+		Password      string `json:"password"`
+		PlainPassword string `json:"plain_password"`
 	}
 
 	type response struct {
@@ -120,22 +127,82 @@ func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
 			//w.Write([]byte(`{"retcode":400,"retmsg":"name and pw not match"}`))
 			//return
 		}
+
 		uobj, err := model.UserGetByName(db, nameLow)
 		if err != nil {
-			w.Write([]byte(`{"retcode":400,"retmsg":"json Decode err:` + err.Error() + `"}`))
-			return
+			if !siteCf.LdapEnabled {
+
+			}
+			// not found in db
+			// LDAP AUTH
+			_, email, err := h.LdapAuthentication(rec.Name, rec.PlainPassword)
+			if err != nil {
+				w.Write([]byte(`{"retcode":400,"retmsg":"json Decode err:` + err.Error() + `"}`))
+				return
+			}
+
+			// save user to db
+			userId, _ := db.HnextSequence("user")
+			flag := 5
+			if siteCf.RegReview {
+				flag = 1
+			}
+
+			if userId == 1 {
+				flag = 99
+			}
+
+			uobj := model.User{
+				Id:            userId,
+				Name:          rec.Name,
+				Password:      rec.Password,
+				Email:         email,
+				Flag:          flag,
+				RegTime:       timeStamp,
+				LastLoginTime: timeStamp,
+				Session:       xid.New().String(),
+			}
+
+			uidStr := strconv.FormatUint(userId, 10)
+			err = util.GenerateAvatar("male", rec.Name, 73, 73, filepath.Join(mainCf.PubDir, "avatar", uidStr+".jpg"))
+			if err != nil {
+				log.Error("生成头像发送错误:", err)
+				uobj.Avatar = "0"
+			} else {
+				uobj.Avatar = uidStr
+			}
+
+			jb, _ := json.Marshal(uobj)
+			db.Hset("user", youdb.I2b(uobj.Id), jb)
+			db.Hset("user_name2uid", []byte(nameLow), youdb.I2b(userId))
+			db.Hset("user_flag:"+strconv.Itoa(flag), youdb.I2b(uobj.Id), []byte(""))
+
+			h.SetCookie(w, "SessionID", strconv.FormatUint(uobj.Id, 10)+":"+uobj.Session, 365)
+		} else {
+			if uobj.Password != rec.Password {
+
+				if !siteCf.LdapEnabled {
+					db.Zset(bn, key, uint64(time.Now().UTC().Unix()))
+					w.Write([]byte(`{"retcode":400,"retmsg":"name and pw not match"}`))
+					return
+				}
+				//LDAP 登录
+				_, _, err := h.LdapAuthentication(rec.Name, rec.PlainPassword)
+				if err != nil {
+					db.Zset(bn, key, uint64(time.Now().UTC().Unix()))
+					w.Write([]byte(`{"retcode":400,"retmsg":"name and pw not match"}`))
+					return
+				}
+			}
+
+			sessionid := xid.New().String()
+			uobj.LastLoginTime = timeStamp
+			uobj.Session = sessionid
+			jb, _ := json.Marshal(uobj)
+			db.Hset("user", youdb.I2b(uobj.Id), jb)
+			h.SetCookie(w, "SessionID", strconv.FormatUint(uobj.Id, 10)+":"+sessionid, 365)
 		}
-		if uobj.Password != rec.Password {
-			db.Zset(bn, key, uint64(time.Now().UTC().Unix()))
-			w.Write([]byte(`{"retcode":400,"retmsg":"name and pw not match"}`))
-			return
-		}
-		sessionid := xid.New().String()
-		uobj.LastLoginTime = timeStamp
-		uobj.Session = sessionid
-		jb, _ := json.Marshal(uobj)
-		db.Hset("user", youdb.I2b(uobj.Id), jb)
-		h.SetCookie(w, "SessionID", strconv.FormatUint(uobj.Id, 10)+":"+sessionid, 365)
+
 	} else {
 		// register
 		siteCf := h.App.Cf.Site

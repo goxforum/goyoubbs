@@ -53,47 +53,54 @@ type MainConf struct {
 }
 
 type SiteConf struct {
-	GoVersion         string
-	MD5Sums           string
-	Name              string
-	Desc              string
-	AdminEmail        string
-	MainDomain        string // 上传图片后添加网址前缀, eg: http://domian.com 、http://234.21.35.89:8082
-	MainNodeIds       string
-	TimeZone          int
-	HomeShowNum       int
-	PageShowNum       int
-	TagShowNum        int
-	CategoryShowNum   int
-	TitleMaxLen       int
-	ContentMaxLen     int
-	PostInterval      int
-	CommentListNum    int
-	CommentInterval   int
-	Authorized        bool
-	RegReview         bool
-	CloseReg          bool
-	AutoDataBackup    bool
-	AutoGetTag        bool
-	GetTagApi         string
-	QQClientID        int
-	QQClientSecret    string
-	WeiboClientID     int
-	WeiboClientSecret string // eg: "jpg,jpeg,gif,zip,pdf"
-	UploadSuffix      string
-	UploadImgOnly     bool
-	UploadImgResize   bool
-	UploadMaxSize     int
-	UploadMaxSizeByte int64
-	CloudUploadPrefix string
-	QiniuAccessKey    string
-	QiniuSecretKey    string
-	QiniuDomain       string
-	QiniuBucket       string
-	UpyunDomain       string
-	UpyunBucket       string
-	UpyunUser         string
-	UpyunPw           string
+	GoVersion            string
+	MD5Sums              string
+	Name                 string
+	Desc                 string
+	AdminEmail           string
+	MainDomain           string // 上传图片后添加网址前缀, eg: http://domian.com 、http://234.21.35.89:8082
+	MainNodeIds          string
+	TimeZone             int
+	HomeShowNum          int
+	PageShowNum          int
+	TagShowNum           int
+	CategoryShowNum      int
+	TitleMaxLen          int
+	ContentMaxLen        int
+	PostInterval         int
+	CommentListNum       int
+	CommentInterval      int
+	Authorized           bool
+	RegReview            bool
+	CloseReg             bool
+	AutoDataBackup       bool
+	AutoGetTag           bool
+	GetTagApi            string
+	QQClientID           int
+	QQClientSecret       string
+	WeiboClientID        int
+	WeiboClientSecret    string // eg: "jpg,jpeg,gif,zip,pdf"
+	UploadSuffix         string
+	UploadImgOnly        bool
+	UploadImgResize      bool
+	UploadMaxSize        int
+	UploadMaxSizeByte    int64
+	CloudUploadPrefix    string
+	QiniuAccessKey       string
+	QiniuSecretKey       string
+	QiniuDomain          string
+	QiniuBucket          string
+	UpyunDomain          string
+	UpyunBucket          string
+	UpyunUser            string
+	UpyunPw              string
+	LdapEnabled          bool
+	LdapBindDN           string
+	LdapBindPasswd       string
+	LdapServerHost       string
+	LdapServerPort       int
+	LdapUserSearchBaseDN string
+	LdapUserSearchFilter string
 }
 
 type AppConf struct {
