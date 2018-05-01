@@ -9,8 +9,10 @@ go get github.com/goxforum/xforum/cmd/xforum/...
 
 ## 计划支持功能
 - [x] 云存储上传前缀支持
-- [ ] LDAP登录支持
+- [x] 将静态文件嵌入go二进制包,安装不需要下载静态资源
+- [x] LDAP登录支持
 - [ ] Docker部署
+
 
 
 ## 技术改动
