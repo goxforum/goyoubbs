@@ -3,14 +3,16 @@ Main:
     HttpsOn: false
     Domain: ""
     HttpsPort: 443
-    PubDir: "../../static"
-    ViewDir: "view/default"
+    PubDir: "../../static"  # 头像文件上传文件夹必须配置
+    ViewDir: "view/default" # view模版文件夹仅在调试模式下生效
     Youdb: "mydata.db"
     CookieSecure: false
     CookieHttpOnly: true
     OldSiteDomain: ""
     TLSCrtFile: ""
     TLSKeyFile: ""
+    Debug: False
+    LogLevle: 0   # 0 DEBUG 1 INFO
 Site:
     Name: "youBBS"
     Desc: "Yet another bbs in go"

@@ -50,6 +50,8 @@ type MainConf struct {
 	OldSiteDomain  string
 	TLSCrtFile     string
 	TLSKeyFile     string
+	Debug          bool
+	LogLevle       int
 }
 
 type SiteConf struct {

@@ -30,7 +30,6 @@ import (
 
 	"goji.io"
 	"goji.io/pat"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -39,10 +38,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/xi2/httpgzip"
 	"golang.org/x/crypto/acme/autocert"
 	"golang.org/x/net/http2"
+	"gopkg.in/logger.v1"
 
+	"github.com/goxforum/xforum/pkg/asset"
 	"github.com/goxforum/xforum/pkg/cronjob"
 	"github.com/goxforum/xforum/pkg/getold"
 	"github.com/goxforum/xforum/pkg/router"
@@ -80,6 +82,7 @@ func main() {
 	mcf := app.Cf.Main
 	scf := app.Cf.Site
 
+	log.SetOutputLevel(mcf.LogLevle)
 	// static file server
 	staticPath := mcf.PubDir
 	if len(staticPath) == 0 {
@@ -88,10 +91,20 @@ func main() {
 
 	root.Handle(pat.New("/.well-known/acme-challenge/*"),
 		http.StripPrefix("/.well-known/acme-challenge/", http.FileServer(http.Dir(staticPath))))
-	root.Handle(pat.New("/static/*"),
-		http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
 
+	root.Handle(pat.New("/static/avatar/*"),
+		http.StripPrefix("/static/avatar/", http.FileServer(http.Dir(staticPath+"/avatar"))))
+	root.Handle(pat.New("/static/upload/*"),
+		http.StripPrefix("/static/upload/", http.FileServer(http.Dir(staticPath+"/upload"))))
 	root.Handle(pat.New("/*"), router.NewRouter(app))
+	if !mcf.Debug {
+		afs := &assetfs.AssetFS{Asset: asset.Asset, AssetDir: asset.AssetDir, AssetInfo: asset.AssetInfo, Prefix: "static"}
+		root.Handle(pat.New("/static/*"),
+			http.StripPrefix("/static/", http.FileServer(afs)))
+	} else {
+		root.Handle(pat.New("/static/*"),
+			http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
+	}
 
 	// normal http
 	// http.ListenAndServe(listenAddr, root)

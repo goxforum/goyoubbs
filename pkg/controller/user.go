@@ -135,25 +135,25 @@ func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
 			}
 			// not found in db
 			// LDAP AUTH
-			_, email, err := h.LdapAuthentication(rec.Name, rec.PlainPassword)
+			email, err := h.LdapAuthentication(rec.Name, rec.PlainPassword)
 			if err != nil {
 				w.Write([]byte(`{"retcode":400,"retmsg":"json Decode err:` + err.Error() + `"}`))
 				return
 			}
 
 			// save user to db
-			userId, _ := db.HnextSequence("user")
+			userID, _ := db.HnextSequence("user")
 			flag := 5
 			if siteCf.RegReview {
 				flag = 1
 			}
 
-			if userId == 1 {
+			if userID == 1 {
 				flag = 99
 			}
 
 			uobj := model.User{
-				Id:            userId,
+				Id:            userID,
 				Name:          rec.Name,
 				Password:      rec.Password,
 				Email:         email,
@@ -163,10 +163,10 @@ func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
 				Session:       xid.New().String(),
 			}
 
-			uidStr := strconv.FormatUint(userId, 10)
+			uidStr := strconv.FormatUint(userID, 10)
 			err = util.GenerateAvatar("male", rec.Name, 73, 73, filepath.Join(mainCf.PubDir, "avatar", uidStr+".jpg"))
 			if err != nil {
-				log.Error("生成头像发送错误:", err)
+				log.Error("生成头像发生错误:", err)
 				uobj.Avatar = "0"
 			} else {
 				uobj.Avatar = uidStr
@@ -174,7 +174,7 @@ func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
 
 			jb, _ := json.Marshal(uobj)
 			db.Hset("user", youdb.I2b(uobj.Id), jb)
-			db.Hset("user_name2uid", []byte(nameLow), youdb.I2b(userId))
+			db.Hset("user_name2uid", []byte(nameLow), youdb.I2b(userID))
 			db.Hset("user_flag:"+strconv.Itoa(flag), youdb.I2b(uobj.Id), []byte(""))
 
 			h.SetCookie(w, "SessionID", strconv.FormatUint(uobj.Id, 10)+":"+uobj.Session, 365)
@@ -187,7 +187,7 @@ func (h *BaseHandler) UserLoginPost(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				//LDAP 登录
-				_, _, err := h.LdapAuthentication(rec.Name, rec.PlainPassword)
+				_, err := h.LdapAuthentication(rec.Name, rec.PlainPassword)
 				if err != nil {
 					db.Zset(bn, key, uint64(time.Now().UTC().Unix()))
 					w.Write([]byte(`{"retcode":400,"retmsg":"name and pw not match"}`))

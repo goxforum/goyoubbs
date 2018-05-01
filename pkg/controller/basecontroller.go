@@ -27,14 +27,18 @@ package controller
 import (
 	"encoding/json"
 	"errors"
-	"github.com/ego008/youdb"
-	"github.com/goxforum/xforum/pkg/model"
-	"github.com/goxforum/xforum/pkg/system"
 	"html/template"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/ego008/youdb"
+	"gopkg.in/logger.v1"
+
+	"github.com/goxforum/xforum/pkg/model"
+	"github.com/goxforum/xforum/pkg/system"
+	"github.com/goxforum/xforum/pkg/view"
 )
 
 var mobileRegexp = regexp.MustCompile(`Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune`)
@@ -75,7 +79,17 @@ func (h *BaseHandler) Render(w http.ResponseWriter, tpl string, data interface{}
 	tplDir := h.App.Cf.Main.ViewDir + "/" + tpl + "/"
 	tmpl := template.New("youbbs")
 	for _, tpath := range tplPath {
-		tmpl = template.Must(tmpl.ParseFiles(tplDir + tpath))
+		if h.App.Cf.Main.Debug {
+			tmpl = template.Must(tmpl.ParseFiles(tplDir + tpath))
+
+		} else {
+			log.Debug("tmpl from bindata")
+			text, err := view.Asset("view/default/" + tpl + "/" + tpath)
+			if err != nil {
+				log.Error("get view from bindata error:", err)
+			}
+			tmpl = template.Must(tmpl.Parse(string(text)))
+		}
 	}
 	err := tmpl.Execute(w, data)
 

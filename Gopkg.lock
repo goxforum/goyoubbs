@@ -20,6 +20,12 @@
   revision = "9300f34735d23901821ba8a43b725d89a2791db6"
 
 [[projects]]
+  name = "github.com/elazarl/go-bindata-assetfs"
+  packages = ["."]
+  revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/gorilla/securecookie"
   packages = ["."]
   revision = "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983"
@@ -221,6 +227,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "182ea97fa6ad463da0b49eb3a4659219e28d27d25af7e15add5e5fa7dcffb4cf"
+  inputs-digest = "02a2b41302572c78804111d137fb957259b34ee0d95e4f6b7a756e30b263ccf8"
   solver-name = "gps-cdcl"
   solver-version = 1
