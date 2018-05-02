@@ -4,4 +4,4 @@ debug
 *.db
 *youbbs
 # bindata.go
-xforum
+xforum*
