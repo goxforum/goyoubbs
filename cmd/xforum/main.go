@@ -92,19 +92,21 @@ func main() {
 	root.Handle(pat.New("/.well-known/acme-challenge/*"),
 		http.StripPrefix("/.well-known/acme-challenge/", http.FileServer(http.Dir(staticPath))))
 
-	root.Handle(pat.New("/static/avatar/*"),
-		http.StripPrefix("/static/avatar/", http.FileServer(http.Dir(staticPath+"/avatar"))))
-	root.Handle(pat.New("/static/upload/*"),
-		http.StripPrefix("/static/upload/", http.FileServer(http.Dir(staticPath+"/upload"))))
-	root.Handle(pat.New("/*"), router.NewRouter(app))
 	if !mcf.Debug {
+		// 复写路由从文件夹读取文件
+		root.Handle(pat.New("/static/avatar/*"),
+			http.StripPrefix("/static/avatar/", http.FileServer(http.Dir(staticPath+"/avatar"))))
+		root.Handle(pat.New("/static/upload/*"),
+			http.StripPrefix("/static/upload/", http.FileServer(http.Dir(staticPath+"/upload"))))
 		afs := &assetfs.AssetFS{Asset: asset.Asset, AssetDir: asset.AssetDir, AssetInfo: asset.AssetInfo, Prefix: "static"}
 		root.Handle(pat.New("/static/*"),
 			http.StripPrefix("/static/", http.FileServer(afs)))
+
 	} else {
 		root.Handle(pat.New("/static/*"),
 			http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
 	}
+	root.Handle(pat.New("/*"), router.NewRouter(app))
 
 	// normal http
 	// http.ListenAndServe(listenAddr, root)
