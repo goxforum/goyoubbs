@@ -161,11 +161,18 @@ func (h *BaseHandler) UserSettingPost(w http.ResponseWriter, r *http.Request) {
 
 	isChanged := false
 	if recAct == "info" {
-		currentUser.Email = rec.Email
+		// 开启LDAP认证时用户邮箱不能修改
+		if !h.App.Cf.Site.LdapEnabled {
+			currentUser.Email = rec.Email
+		}
 		currentUser.Url = rec.Url
 		currentUser.About = rec.About
 		isChanged = true
 	} else if recAct == "change_pw" {
+		if h.App.Cf.Site.LdapEnabled {
+			w.Write([]byte(`{"retcode":400,"retmsg":"Password can not modified because Ldap enabled. "}`))
+			return
+		}
 		if len(rec.Password0) == 0 || len(rec.Password) == 0 {
 			w.Write([]byte(`{"retcode":400,"retmsg":"missed args"}`))
 			return
