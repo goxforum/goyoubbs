@@ -13,8 +13,13 @@
                 </tr>
                 <tr>
                     <td width="120" align="right">电子邮件</td>
+                    {{if .SiteCf.LdapEnabled}}
+                    <td width="auto" align="left">
+                        <input type="text" class="sl w200" id="email" value="{{.Uobj.Email}}" disabled /> LDAP启用时不支持修改邮箱、密码。</td>
+                    {{else}}
                     <td width="auto" align="left">
                         <input type="text" class="sl w200" id="email" value="{{.Uobj.Email}}" /> 不公开，仅供取回密码，务必正确填写且记住。</td>
+                    {{end}}
                 </tr>
                 <tr>
                     <td width="120" align="right">个人网站</td>
