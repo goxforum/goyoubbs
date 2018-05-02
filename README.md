@@ -12,6 +12,7 @@ go get github.com/goxforum/xforum/cmd/xforum/...
 - [x] 将静态文件嵌入go二进制包,安装不需要下载静态资源
 - [x] LDAP登录支持
 - [ ] Docker部署
+- [ ] InfluxDB metrics收集
 
 
 
